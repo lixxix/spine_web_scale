@@ -1,0 +1,27 @@
+body {
+    /* flex:flex_; */
+    text-align: center;
+}
+
+.upload_area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+}
+
+.dragbox {
+    height: 250px;
+    width: 400px;
+    border: dashed 1px gray;
+    margin-bottom: 10px;
+    color: #777;
+    margin: 10px;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items:stretch;
+    justify-content:space-around;
+}
+

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="spine-core.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>当前仅仅支持Spine3.8版本比例分析</h1>
+    <h2>
+        比例 :<span style="color:salmon">上传atlas，json或者skel获取比例</span>
+        
+        <div  id="scale" style="color:red;padding:10px"></div>
+    </h2>
+
+    <div class="upload_area">
+        <div id="atlas" class="dragbox">
+            <div>将文件一起拖入此区域</div>
+        </div>
+    </div>
+    <script>
+        var obj = {
+            atlas: "",
+            skel: null,
+            json: "",
+
+            clear () {
+                this.atlas = "";
+                this.skel = null;
+                this.json = "";
+            },
+            check() {
+                if (this.atlas && this.json) {
+                    let scaler = new spine.SpineScaler()
+                    let scale = scaler.readJosnScale(obj.json, obj.atlas)
+                    document.getElementById("scale").innerHTML = scale.toString();
+                } else if (this.atlas && this.skel) {
+                    let scaler = new spine.SpineScaler()
+                    let scale = scaler.readSkelScale(new Uint8Array(obj.skel), obj.atlas)
+                    document.getElementById("scale").innerHTML = scale.toString();
+                }
+            },
+            loadFile(file, ext) {
+                var reader = new FileReader();
+                console.log(file)
+                var self = this;
+                reader.onload = function (evt) {
+                    if (ext == "atlas") {
+                        let tx = evt.target.result
+                        self.atlas = tx
+                        self.check()
+                    } else if(ext == "json"){
+                        let txdat = evt.target.result;
+                        self.json = txdat
+                        self.check()
+                    } else if (ext == "skel") {
+                        self.skel = evt.target.result
+                        self.check()
+                    }
+                };
+
+                if (ext == "atlas" || ext == "json") {
+                    reader.readAsText(file)
+                } else if (ext == "skel") {
+                    reader.readAsArrayBuffer(file)
+                }
+            }
+        }
+
+        // 目标进入drop区域
+        function dragenter(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            e.target.style.background = '#666'
+        }
+        // 目标位于drop区域上方
+        function dragover(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        // 目标离开drop区域
+        function dragleave(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            e.target.style.background = '#fbfbfb';
+        }
+
+        function drop(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            e.target.style.background = '#fbfbfb';
+            obj.clear();
+
+            var dt = e.dataTransfer;
+            var files = dt.files;
+            for (let i = 0; i < files.length; i++) {
+                var file = files[i]
+                var ext = file.name.split(".")[1]
+                obj.loadFile(file, ext)
+            }
+        }
+
+        // let drags = ["atlas", "json", "skel"]
+        let drags = ["atlas"]
+        for (let i = 0; i < drags.length; i++) {
+            let name = drags[i];
+            let dropbox = document.getElementById(drags[i])
+            if (dropbox) {
+                dropbox.addEventListener("dragenter", dragenter, false);
+                dropbox.addEventListener("dragover", dragover, false);
+                dropbox.addEventListener("dragleave", dragleave, false);
+                dropbox.addEventListener("drop", drop, false);
+            }
+        }
+    </script>
+</body>
+
+</html>
