@@ -328,7 +328,7 @@ module spine {
 					region.rotation = rotation;
 					region.width = width * scale;
 					region.height = height * scale;
-					Color.rgba8888ToColor(region.color, color);
+					// Color.rgba8888ToColor(region.color, color);
 					this.text_config[region.path] = new SkelSlice(region.path, region.width, region.height)
 					return region;
 				}

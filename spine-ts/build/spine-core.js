@@ -4411,7 +4411,6 @@ var spine;
                     region.rotation = rotation;
                     region.width = width * scale;
                     region.height = height * scale;
-                    spine.Color.rgba8888ToColor(region.color, color);
                     this.text_config[region.path] = new spine.SkelSlice(region.path, region.width, region.height);
                     return region;
                 }
